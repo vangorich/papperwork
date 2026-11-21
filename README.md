@@ -15,7 +15,7 @@
 
 每台电脑任选一种即可。可以在 Windows「设置 → 系统 → 系统信息」中查看系统类型；虚拟机按其中 Windows 的架构选择。程序使用系统 WebView2，安装版仅安装到当前用户。
 
-[使用说明](https://github.com/vangorich/papperwork/releases/download/v0.2.7/使用说明.md) · [SHA-256 校验清单](https://github.com/vangorich/papperwork/releases/download/v0.2.7/SHA256SUMS.txt)
+[使用说明](https://github.com/vangorich/papperwork/releases/download/v0.2.7/Paperwork-0.2.7-user-guide.zh-CN.md) · [SHA-256 校验清单](https://github.com/vangorich/papperwork/releases/download/v0.2.7/SHA256SUMS.txt)
 
 ## 基本功能
 
