@@ -1,0 +1,23 @@
+.md-sheet .md-sheet__panel { width: min(540px, calc(100vw - 28px)); max-height: calc(100dvh - 36px); box-sizing: border-box; overflow: hidden; display: flex; flex-direction: column; }
+.md-sheet__body { min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: 2px 5px; margin-inline: -5px; }
+.md-sheet__panel > .dialog__header, .md-sheet__panel > .dialog__actions { flex: none; }
+.md-sheet__panel > .dialog__actions { margin-top: 10px; border-top: 1px solid var(--line); padding-top: 10px; }
+.md-sheet__panel > .dialog__header { margin-bottom: 6px; }
+.md-sheet__scope, .md-sheet__service { border: 0; padding: 0; margin: 12px 0 6px; min-width: 0; }
+.md-sheet legend { padding: 0; margin-bottom: 7px; color: var(--ink-muted); font-size: calc(12px + var(--ui-font-offset)); font-weight: 600; }
+.md-sheet__scope { display: flex; flex-wrap: wrap; gap: 6px; }
+.md-sheet__scope label { display: inline-flex; align-items: center; gap: 6px; padding: 5px 9px; min-height: 34px; white-space: nowrap; border: 1px solid var(--line); border-radius: 7px; cursor: pointer; }
+.md-sheet__scope input[type="radio"] { width: 15px; height: 15px; min-height: 0; flex: 0 0 15px; padding: 0; margin: 0; accent-color: var(--accent); }
+.md-sheet__scope label[data-active] { border-color: var(--paper-accent, var(--accent)); background: var(--accent-soft); }
+.md-sheet__scope label:has(input:disabled) { opacity: .62; cursor: default; }
+.md-sheet__service { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.md-sheet__service label:first-of-type { grid-column: 1 / -1; }
+.md-sheet__service label, .md-sheet__preview label { display: grid; gap: 4px; min-width: 0; color: var(--ink-muted); font-size: calc(12px + var(--ui-font-offset)); }
+.md-sheet__service input, .md-sheet__preview textarea { min-width: 0; width: 100%; box-sizing: border-box; border: 1px solid var(--line-strong); border-radius: 5px; color: var(--ink); background: var(--surface-raised); padding: 7px 8px; }
+.md-sheet__preview { display: grid; justify-items: start; gap: 8px; margin-block: 10px; }
+.md-sheet__preview label, .md-sheet__suggestion { width: 100%; }
+.md-sheet__preview textarea { resize: vertical; min-height: 7em; max-height: 22em; font: inherit; line-height: 1.5; }
+.md-sheet__suggestion { padding-inline-start: 8px; border-inline-start: 2px solid var(--paper-accent, var(--accent)); }
+.md-sheet__suggestion > div { display: flex; gap: 6px; margin-top: 6px; }
+.md-sheet__preview .dialog__hint { overflow-wrap: anywhere; }
+@media (pointer: coarse) { .md-sheet__scope label { min-height: 44px; } }

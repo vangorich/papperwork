@@ -1,0 +1,32 @@
+/* Printer's destination slip. The command and the destination are distinct:
+   creating a draft or editing its name never acts as the Join button. */
+.workspace-picker { display: flex; flex-direction: column; max-height: min(640px, calc(100dvh - 40px)); }
+.workspace-picker > header, .workspace-picker > footer, .workspace-picker__tools, .workspace-picker__name-editor { flex: none; }
+.workspace-picker__tools { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 18px 0; }
+.workspace-picker__tools > span, .workspace-picker__name-editor label { color: var(--ink-muted); font-size: calc(12px + var(--ui-font-offset)); font-weight: 600; }
+.workspace-picker__tools button, .workspace-picker__name-editor button { display: inline-flex; align-items: center; justify-content: center; gap: 5px; min-height: 32px; padding: 4px 9px; color: var(--ink); border: 1px solid var(--line-strong); border-radius: 5px; background: var(--surface-raised); cursor: pointer; }
+.workspace-picker__list { min-height: 0; overflow-y: auto; overscroll-behavior: contain; }
+.workspace-picker__row { display: flex; align-items: center; gap: 5px; min-width: 0; }
+.workspace-picker__row > [role='radio'] { min-width: 0; flex: 1; }
+/* A keyboard focus ring or hover is not a selection. Only an explicit choice
+   inks in the suggested print destination; existing projects never use this style. */
+.workspace-picker__list .workspace-picker__row[data-draft='ghost'] > [role='radio'] {
+  border: 1px dashed var(--line-strong);
+  color: var(--ink-muted);
+  background: transparent;
+  box-shadow: none;
+}
+.workspace-picker__row[data-draft='ghost'] > [role='radio'] i { border: 1px dashed var(--ink-muted); }
+.workspace-picker__list .workspace-picker__row[data-draft='chosen'] > [role='radio'] { border-style: solid; }
+.workspace-picker__row > [role='radio']:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.workspace-picker__row > [role='radio'] strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.workspace-picker__row > [role='radio'] i { grid-column: -2; }
+.workspace-picker__list .workspace-picker__pencil { display: inline-grid; grid-template-columns: none; place-items: center; min-width: 34px; min-height: 34px; padding: 4px; border-radius: 5px; }
+.workspace-picker__pencil:focus-visible, .workspace-picker__tools button:focus-visible, .workspace-picker__name-editor :is(input,button):focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.workspace-picker__name-editor { margin: 0 18px 12px; padding: 8px 10px; border-inline-start: 2px solid var(--paper-accent, var(--accent)); background: var(--surface); }
+.workspace-picker__name-editor > div { display: flex; align-items: stretch; gap: 5px; margin: 5px 0; }
+.workspace-picker__name-editor input { min-width: 0; flex: 1; padding: 6px 8px; color: var(--ink); background: var(--surface-raised); border: 1px solid var(--line-strong); border-radius: 4px; }
+.workspace-picker__name-editor small { color: var(--ink-muted); font-size: calc(11px + var(--ui-font-offset)); }
+.workspace-picker__name-editor small[data-error], .workspace-picker .workspace-picker__error { color: var(--danger); }
+.workspace-picker .workspace-picker__error { margin: 0 18px 10px; }
+@media (pointer: coarse) { .workspace-picker__tools button, .workspace-picker__list .workspace-picker__pencil, .workspace-picker__name-editor button { min-height: 44px; min-width: 44px; } }

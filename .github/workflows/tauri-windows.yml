@@ -1,0 +1,72 @@
+name: Tauri Windows builds (manual)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Windows ${{ matrix.arch }} (native)
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: x64
+            runner: windows-2022
+            target: x86_64-pc-windows-msvc
+            machine: '8664'
+          - arch: arm64
+            runner: windows-11-arm
+            target: aarch64-pc-windows-msvc
+            machine: 'AA64'
+    env:
+      RUSTUP_TOOLCHAIN: stable-${{ matrix.target }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          architecture: ${{ matrix.arch }}
+      - name: Set up native Rust and check host architecture
+        shell: pwsh
+        run: |
+          if ($env:RUNNER_ARCH -ine '${{ matrix.arch }}') { throw "Unexpected runner: $env:RUNNER_ARCH" }
+          rustup toolchain install $env:RUSTUP_TOOLCHAIN --profile minimal --no-self-update
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          if ((rustc -vV) -notcontains 'host: ${{ matrix.target }}') { throw 'Unexpected rustc host' }
+      - run: npm ci --ignore-scripts
+      - run: npm run build:${{ matrix.arch }}
+        env:
+          CARGO_TARGET_DIR: ${{ github.workspace }}/src-tauri/target
+      - name: Verify the application PE (not the NSIS bootstrapper)
+        id: application
+        shell: pwsh
+        run: |
+          $release = 'src-tauri/target/${{ matrix.target }}/release'
+          $apps = @(Get-ChildItem -LiteralPath $release -File -Filter '*.exe')
+          if ($apps.Count -ne 1) { throw "Expected one application executable in $release, found $($apps.Count)" }
+          $reader = [IO.BinaryReader]::new([IO.File]::OpenRead($apps[0].FullName))
+          try {
+            if ($reader.ReadUInt16() -ne 0x5A4D) { throw 'Missing MZ header' }
+            $reader.BaseStream.Position = 0x3c
+            $reader.BaseStream.Position = $reader.ReadInt32()
+            if ($reader.ReadUInt32() -ne 0x4550) { throw 'Missing PE signature' }
+            $machine = '{0:X4}' -f $reader.ReadUInt16()
+            if ($machine -ne '${{ matrix.machine }}') { throw "Unexpected PE machine: $machine" }
+          } finally { $reader.Dispose() }
+          "path=$release/$($apps[0].Name)" >> $env:GITHUB_OUTPUT
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Paperwork-PDF-Studio-Windows-${{ matrix.arch }}-NSIS
+          path: src-tauri/target/${{ matrix.target }}/release/bundle/nsis/*-setup.exe
+          if-no-files-found: error
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Paperwork-PDF-Studio-Windows-${{ matrix.arch }}-application
+          path: ${{ steps.application.outputs.path }}
+          if-no-files-found: error

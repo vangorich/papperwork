@@ -1,0 +1,67 @@
+# Windows ARM64 build — for ARM laptops and Windows-on-ARM VMs.
+# Self-contained: electron-builder uses this file instead of package.json#build.
+# Differences from the x64 config:
+#   * targets arm64 only, NSIS installer (no portable self-extract stub, which
+#     re-unpacks the whole app on every launch — noticeably slow on ARM VMs)
+#   * packages the win32/arm64 onnxruntime binaries instead of x64
+#   * drops the DirectML GPU-provider DLLs (~42 MB): those serve only the
+#     DirectML GPU execution provider, while OCR inference runs on the CPU
+#     provider. If a future paddleocr version requests DirectML, restore them.
+appId: studio.paperwork.pdf
+productName: Paperwork PDF Studio
+electronLanguages:
+  - zh-CN
+  - en-US
+files:
+  - dist/**/*
+  - dist-electron/**/*
+  - package.json
+  - '!node_modules/**/*'
+  - node_modules/paddleocr/dist/*.mjs
+  - node_modules/paddleocr/dist/*.cjs
+  - node_modules/paddleocr/package.json
+  - node_modules/onnxruntime-common/dist/**/*.js
+  - node_modules/onnxruntime-common/dist/**/package.json
+  - node_modules/onnxruntime-common/package.json
+  - node_modules/onnxruntime-node/dist/**/*.js
+  - node_modules/onnxruntime-node/bin/napi-v6/win32/arm64/onnxruntime.dll
+  - node_modules/onnxruntime-node/bin/napi-v6/win32/arm64/onnxruntime_binding.node
+  - node_modules/onnxruntime-node/package.json
+extraResources:
+  - from: build/virtual-printer.ps1
+    to: virtual-printer.ps1
+  - from: resources/ocr
+    to: ocr
+    filter:
+      - '**/*'
+asarUnpack:
+  - node_modules/onnxruntime-node/bin/napi-v6/win32/arm64/**/*
+afterPack: build/after-pack.cjs
+directories:
+  output: release-arm64
+win:
+  icon: build/icon.ico
+  target:
+    - target: nsis
+      arch:
+        - arm64
+  artifactName: ${productName}-Setup-${version}-arm64.${ext}
+fileAssociations:
+  - ext: pdf
+    name: PDF 文档
+    description: Portable Document Format
+    role: Editor
+    icon: pdf.ico
+  - ext:
+      - png
+      - jpg
+      - jpeg
+    name: 图片文件
+    description: PNG 或 JPEG 图片
+    role: Editor
+nsis:
+  oneClick: false
+  allowToChangeInstallationDirectory: true
+  perMachine: false
+  allowElevation: false
+  include: build/installer.nsh

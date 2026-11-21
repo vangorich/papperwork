@@ -1,0 +1,90 @@
+/* Only the empty workspace has a printer's proof on its table. Keep all of
+   its artwork and paper treatment away from PDF/annotation coordinate layers. */
+.document-desk {
+  position: relative;
+  min-height: 100%;
+  display: grid;
+  place-items: center;
+  container-type: inline-size;
+  padding: clamp(24px, 4.8vw, 78px);
+}
+.document-desk__sheet {
+  position: relative;
+  width: min(100%, 1060px);
+  display: grid;
+  grid-template-columns: minmax(0, .92fr) minmax(0, 1.13fr);
+  align-items: center;
+  gap: clamp(24px, 4cqi, 60px);
+  border: 1px solid var(--line-strong);
+  padding: clamp(26px, 4.7cqi, 66px);
+  background: var(--surface-raised);
+  box-shadow: 0 4px 0 -1px var(--surface), 0 4px 0 var(--line-strong), 0 14px 36px -22px color-mix(in srgb, var(--ink) 42%, transparent);
+}
+.document-desk__copy { min-width: 0; }
+.document-desk__copy h1 {
+  margin: 0;
+  color: var(--ink);
+  font-family: var(--font-paper);
+  font-size: clamp(34px, calc(4.65cqi + var(--ui-font-offset)), 62px);
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: .02em;
+  text-wrap: balance;
+}
+.document-desk__copy p { margin: 17px 0 25px; max-width: 28em; font-size: calc(13px + var(--ui-font-offset)); line-height: 1.8; color: var(--ink-soft); }
+.document-desk__actions { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; }
+.document-desk__actions .button { min-height: 42px; gap: 8px; padding-inline: 14px; font-size: calc(12px + var(--ui-font-offset)); white-space: nowrap; }
+.document-desk__actions .button--ghost { font-weight: 500; }
+.document-desk__formats {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 11px;
+  max-width: max-content;
+  border-top: 1px solid var(--line);
+  margin-top: clamp(24px, 4.4cqi, 56px);
+  padding-top: 13px;
+  font-size: calc(10px + var(--ui-font-offset));
+  color: var(--ink-faint);
+}
+.document-desk__formats span { margin-right: 2px; }
+.document-desk__formats b { font-weight: 600; letter-spacing: .04em; color: var(--ink-soft); }
+.folio-plate { min-width: 0; margin: 0; background: var(--print-bed); color: var(--print-paper); }
+.folio-plate__surface { position: relative; aspect-ratio: 3 / 2; overflow: hidden; }
+.folio-plate__surface img, .folio-plate__surface canvas { width: 100%; height: 100%; display: block; }
+.folio-plate__surface canvas { position: absolute; inset: 0; pointer-events: none; }
+/* Keep a plain 2D path underneath the relief canvas, including after context loss.
+   Percent translation plus a little bleed keeps all edges covered even on a narrow desk. */
+.folio-plate__surface[data-tracking]:not([data-folio-live]) img {
+  transform: translate(calc(var(--folio-x, 0) * 3.1%), calc(var(--folio-y, 0) * 3.8%)) scale(1.08);
+}
+@media screen {
+  /* Set the print down once; keep the sheet, text and button hit boxes still. */
+  .document-desk[data-animated] .folio-plate__surface img {
+    animation: folio-settle 430ms cubic-bezier(.2,.66,.26,1);
+  }
+  @keyframes folio-settle {
+    from { translate: -2% 1.8%; rotate: -1.6deg; scale: 1.12; }
+    72% { translate: .35% -.22%; rotate: .25deg; scale: 1.018; }
+    to { translate: none; rotate: none; scale: none; }
+  }
+}
+@media print {
+  .folio-plate__surface img { transform: none !important; }
+  .folio-plate__surface canvas { display: none !important; }
+}
+.folio-plate__corners { position: absolute; z-index: 1; inset: 10px; pointer-events: none; border: 0; --register: color-mix(in srgb, var(--print-paper) 56%, transparent); background: linear-gradient(var(--register), var(--register)) left top / 11px 1px, linear-gradient(var(--register), var(--register)) left top / 1px 11px, linear-gradient(var(--register), var(--register)) right bottom / 11px 1px, linear-gradient(var(--register), var(--register)) right bottom / 1px 11px; background-repeat: no-repeat; }
+.folio-plate figcaption { display: flex; justify-content: space-between; align-items: center; padding: 7px 12px 8px; border-top: 1px solid color-mix(in srgb, var(--print-paper) 22%, transparent); font-size: calc(10px + var(--ui-font-offset)); letter-spacing: .06em; }
+.folio-plate__inks { display: flex; align-items: center; }
+.folio-plate__inks i { width: 9px; height: 7px; background: var(--print-paper); }
+.folio-plate__inks i:nth-child(2) { background: var(--paper-accent); }
+.folio-plate__inks i:nth-child(3) { background: var(--print-mark); }
+.document-desk__drop { position: absolute; inset: 14px; z-index: 2; display: flex; align-items: center; justify-content: center; gap: 12px; border: 2px dashed var(--accent); background: color-mix(in srgb, var(--surface) 95%, transparent); color: var(--accent-ink); font-size: calc(17px + var(--ui-font-offset)); font-weight: 650; pointer-events: none; }
+@container (max-width: 630px) {
+  .document-desk__sheet { width: min(100%, 440px); grid-template-columns: minmax(0, 1fr); gap: 24px; padding: clamp(16px, 5cqi, 30px); }
+  .document-desk__copy h1 { font-size: calc(32px + var(--ui-font-offset)); }
+  .document-desk__copy p { margin: 10px 0 16px; }
+  .document-desk__formats { margin-top: 16px; padding-top: 9px; }
+}
+@media (max-height: 650px) and (min-width: 650px) { .document-desk { padding-block: 24px; } }
+@media (forced-colors: active) { .document-desk__drop, .document-desk__sheet { border-color: CanvasText; } }

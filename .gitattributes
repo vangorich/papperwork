@@ -1,0 +1,13 @@
+* text=auto
+
+# Keep document fixtures and bundled runtime assets byte-for-byte stable.
+*.pdf binary
+*.png binary
+*.ico binary
+*.cur binary
+*.webp binary
+*.onnx binary
+*.wasm binary
+*.bcmap binary
+*.pfb binary
+*.ttf binary

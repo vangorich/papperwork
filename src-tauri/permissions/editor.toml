@@ -1,0 +1,9 @@
+[[permission]]
+identifier = "allow-editor-documents"
+description = "Document pickers, opaque file grants, exact-path exports, window handshakes and OS document services; never arbitrary file or SQL access."
+commands.allow = [
+  "pick_documents", "read_granted", "release_document", "choose_save", "choose_save_many", "prepare_overwrite",
+  "write_granted", "cancel_writes", "reveal_document", "open_external",
+  "take_pending_opens", "acknowledge_open", "claim_open", "workspace_dirty", "decide_close", "session_reset_done",
+  "native_feature", "native_binary", "pdf_mcp_reply", "pdf_mcp_live", "choose_markdown_export", "write_markdown_asset", "finish_markdown_export", "cancel_markdown_export", "assist_markdown", "cancel_markdown_assist"
+]

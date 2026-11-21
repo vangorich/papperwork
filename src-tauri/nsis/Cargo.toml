@@ -1,0 +1,24 @@
+[package]
+name = "paperwork-mcp-client-config"
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.88"
+publish = false
+
+[[bin]]
+name = "paperwork-mcp-client-config"
+path = "../../scripts/mcp-client-config.rs"
+
+[dependencies]
+serde = { version = "1", features = ["derive"] }
+serde_json = { version = "1", features = ["raw_value"] }
+sha2 = "0.10"
+toml_edit = { version = "0.25", default-features = false, features = ["parse"] }
+uuid = { version = "1", features = ["v4", "serde"] }
+windows-sys = { version = "0.61", features = ["Win32_Security", "Win32_Storage_FileSystem"] }
+
+[profile.release]
+opt-level = "s"
+strip = true
+lto = "thin"
+codegen-units = 1
